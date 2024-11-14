@@ -1,0 +1,10 @@
+export { default as bell } from './bell-icon.svg';
+export { default as helpful0 } from './helpful-icon-enable.svg';
+export { default as helpful } from './helpful-icon.svg';
+export { default as hero0 } from './hero-icon-enable.svg';
+export { default as hero } from './hero-icon.svg';
+export { default as iconSearch } from './icon search.svg';
+export { default as popular0 } from './popular-icon-enable.svg';
+export { default as popular } from './popular-icon.svg';
+export { default as streak0 } from './streak-icon-enable.svg';
+export { default as streak } from './streak-icon.svg';

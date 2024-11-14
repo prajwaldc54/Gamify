@@ -1,0 +1,64 @@
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="Documents/Auth/Signin" />
+
+# Sign In
+
+## Introduction
+
+Sign in is user login page through which user can log into the application and use different resources. The Sign In uses the same form format as Sign Up page except there are only two fields i.e. Email Address and Password.
+
+## Form Validation
+
+Form validation is done using `Formik package`. Formik is used for validating email and password field in Sign In page.
+All of the mentioned fields are all compulsory to be field. Validation for each field are mentioned below:
+
+1. **Email address**
+   - Should be valid email address.
+   - Should be unique among all the user. User cannot register with exisiting email address.
+2. **Password**
+   - The length of password should be atleast eight character long.
+   - Password should contain atleast one capital letter, special character, numeric value and small letter.
+
+The package automatically validates for each field and if the all fields validation are true it calls `login` API function defined in `src/api/auth.ts`.
+
+## Login User
+
+After the user validation, `login` API function is called, through which user is logged in to the system.
+The login API function takes an object in which user email address and password is defined. The passed object can also be seen below code.
+
+```
+{
+    "email":"misterwho@gmail.com",
+    "password":"P@ssword123"
+}
+```
+
+Some errors response returned by the `login` API function.
+
+- If the user is not verified, API returns 403 ('Forbidden Response').
+- If the user email address is not registered or password is incorrect , API returns 400 ('Bad Request Response').
+
+All the above response error is displayed in the form toast with corresponding title and description.
+
+If the user is successfully authenticated, the API returns login related information with two token i.e. `access_token` and `refresh_token`. This response can be seen in below code.
+
+```
+{
+    "success": true,
+    "message": "Login Successful.",
+    "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMjIiLCJuYW1lIjoiU3VsYXNoIE1hbmFuZGhhciIsImVtYWlsIjoic3VsYXNoLm1hbmFuZGhhckBnbWFpbC5jb20ifSwiaWF0IjoxNjU1OTgxNDMxLCJleHAiOjE2NTYwNjc4MzF9.2fU4EmA6q5DB8q_yFv6udIdRWXnCSI-8WVrnM8",
+
+        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVNoIECJ9.eyJ1c2VyIjp7ImlkIjoiMjIiLCJuYW1lIjoiU3VsYXNoIE1hbmFuZGhhciIsImVtYWlsIjoic3VsYXNoLm1hbmFuZGhhckBnbWFpbC5jb20ifSwiaWF0IjoxNjU1OTgxNDMxLCJleHAiOjE2NTYwNjc4MzF9.2fU4EmA6q5DB8q_yFv6udIdRWX91loynCSI-8WVrnM8"
+    }
+}
+```
+
+> NOTE: `refresh_token` is only sent when user checks `[x] Remember Me?` checkbox option
+
+The response token `access_token` and `refresh_token` is then stored in local storage.
+
+## Navigated To
+
+After the success, user is then naviagated to the landing page i.e. `/`.

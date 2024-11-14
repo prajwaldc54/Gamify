@@ -1,0 +1,134 @@
+stages:
+  - codequality
+  - prepare
+  - build
+  - dynamic test
+  - deploy
+
+variables:
+  IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+cache: &global_cache
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - node_modules/
+
+code_quality:
+  stage: codequality
+  image: sonarsource/sonar-scanner-cli
+  script:
+    - sonar-scanner -Dsonar.projectKey=${CI_PROJECT_NAME} -Dsonar.sources=. -Dsonar.host.url=${SQ_URL} -Dsonar.login=${SQ_KEY}
+  tags:
+    - docker
+  artifacts:
+    paths:
+      - .scannerwork
+    expire_in: 7 days
+    when: always
+  only:
+    refs:
+      - merge_requests
+      - /^[0-9].*/
+
+prepare_app:
+  stage: prepare
+  image: node:16.13.0-alpine3.12
+  script:
+    - yarn install --frozen-lockfile
+    - CI=false yarn build
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 days
+    when: always
+  tags:
+    - docker
+  only:
+    refs:
+      - develop
+
+build_web_app:
+  stage: build
+  cache:
+    <<: *global_cache
+    policy: pull
+  before_script:
+    - echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u gitlab-ci-token --password-stdin
+  script:
+    - docker build -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
+  tags:
+    - shell
+  only:
+    refs:
+      - develop
+
+run_e2e_test:
+  stage: dynamic test
+  cache:
+    <<: *global_cache
+    policy: pull
+  variables:
+    FEATURE_FLAG_NAME: 1
+    FF_NETWORK_PER_BUILD: 'true' # Feature Flag - activate container-to-container networking
+    JWT_SECRET: 'te6wpShvfJgfajC2ZesexZKTeky8XLNLmbkD'
+    JWT_REFRESH_SECRET: 'te6wpShvfJgfajC2ZesexZKTeky8XLNLmbkD'
+    MYSQL_DATABASE: test
+    MYSQL_ROOT_PASSWORD: genesis2022
+    DB: test
+    DB_USERNAME: root
+    DB_PASSWORD: genesis2022
+    DB_DIALECT: mysql
+    DB_HOST: db
+    DB_PORT: 3306
+    DB_SYNCHRONIZE: 'true'
+    DB_LOGGING: 'true'
+    DB_AUTOLOADENTITIES: 'true'
+    API_PORT: 8080
+    REACT_APP_APP_TIMEOUT: 1000
+    REACT_APP_API_BASE_URL: apitest
+
+  image: cypress/browsers:node16.14.0-slim-chrome99-ff97
+  # using this image as it requires xvfb dependency
+  services:
+    - name: mysql
+      alias: db
+    - name: registry.maximilianmadl.de:5005/diagonaltechnologies/gamify-learning/gamify-core-api:develop
+      alias: api
+      # entrypoint: ['sh', '-c', 'sleep 10 && yarn migration:run && yarn start:prod']
+      command: ['sh', '-c', 'sleep 10 && yarn migration:run && yarn start:prod']
+    - name: registry.maximilianmadl.de:5005/diagonaltechnologies/gamify-learning/genesis-gamify-front-end:develop
+      alias: frontend
+  before_script:
+    - |
+      cat << EOF >> cypress.env.json
+      {
+        "host": "http://frontend"
+      }
+      EOF
+  script:
+    - yarn test
+    - node_modules/cypress/bin/cypress install
+    - yarn cypress run --config baseUrl=http://frontend
+  tags:
+    - docker
+  only:
+    refs:
+      - merge_requests
+
+deploy_app:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add curl jq # jq is like sed for JSON data
+  script:
+    - cd bin
+    - export APP_IMAGE_NAME=$IMAGE_NAME
+    - echo $PORTAINER_CRED | base64 -d > account.json
+    - echo $STACK_FILE | base64 -d > redeploy.json
+    - sh deploy.sh
+  tags:
+    - docker
+  only:
+    refs:
+      - develop

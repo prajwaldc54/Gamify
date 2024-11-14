@@ -1,0 +1,91 @@
+import { Meta } from '@storybook/addon-docs';
+import InviteTeamImg from '../Assests/InviteTeam.png';
+
+<Meta title="Documents/TeamMember/ListOfTeamMember" />
+
+# List Of TeamMember
+
+## Introduction
+
+List of TeamMember is a page that lists out all the members of a team. A team leader can invite new team members to the team from this page. The button ('Invite Members') present in this page allows user to invite new members to the team. This page is divided into two different components. They are:
+
+### 1. Invite Member Button Component
+
+#### Introduction
+
+Invite Member button triggers a model through which a team leader can invite new team members using their email address. The model triggered by this button has two phase i.e. **InviteTeamModel** and **ResendInviteModel**.
+
+#### InviteTeamModel
+
+This is an initial model which renders when a user first clicks the invite button. This model allows team leader to invite team member using their email address.
+
+When a team leader inputs an email address, it first verify if the input email address is valid or not. If an email is valid it takes the email and store it in a state name `emails`. And display it in the form of badge with a close button that helps to removes the email from the list of emails state i.e. `emails`, if clicked. All the logic mentioned above is accomplished using the help of `ReactMultiEmail` package. This can be seen in below image.
+
+<img src={InviteTeamImg} alt="InviteTeamModel UI" width="550px" height="auto" />
+
+> Note: **react-multi-email** is a package that simplfy react component to format multiple email as the user types.
+
+The `emails` state is passed as props from the parent component, ListOfTeamMember.The other states along with `emails` that are passed into this component are listed below.
+
+```
+type InviteProps = {
+  onClose: () => void;
+  submitAction: () => void;
+  emails: string[];
+  setemails: (emails: string[]) => void;
+};
+
+```
+
+When the submit button is clicked, `submitAction` function is called. This function collects all the emails from `emails` state (array of string) and sent to `invite` API function along with team id and resent value. In sum, below object is sent to the API call.
+
+> Note: `invite` API function can be imported from 'src/api/team'
+
+```
+  let datatoSend = {
+      emails: [...emails],
+      teamId: Number(id),
+      resend: false,
+    };
+
+```
+
+The response of the `invite` API function can be seen in below code.
+
+```
+{
+    "success": true,
+    "message": "Invitation has been sent successfully.",
+    "data": {
+        "invitationSentSuccessfully": [],
+        "alreadyInTeam": [
+            "nabin.gyawali@diagonal.software"
+        ],
+        "invitationAlreadySent": [],
+        "notVerifiedEmails": []
+    }
+}
+```
+
+If the any of the emails was already invited previously, it would appear in `invitationAlreadySent` key's value. If any email is not verified (is not registered) than it would apper in `notVerifiedEmails` key's value. If any of the email invitation is sent successfully, it would appear in `invitationSentSuccessfully` key's value. If an user's email address that is already invited in team, is sent, the API function return the same value in `alreadyInTeam` key's value.
+
+If there is any email address in `invitationAlreadySent ` key's value, then the another model is triggered i.e, **ResendInviteModel**. **InviteTeamModel** model unmounts from the page and mounts the **ResentInviteModel**.
+
+#### ResendInviteModel
+
+This model renders the emails that are already invited to the team but yet to be accepted by the respective user. This model allows the team leader to again sent the invitation to the listed email address. Team leader also has ability to choose emails that are to be invited again from the list of emails.
+
+Same API function is called as mentioned in **InviteTeamModel** i.e, `invite`. This time resend value is set to true meaning duplicated emails are also invited again.
+
+```
+  let datatoSend = {
+      emails: [...emails],
+      teamId: Number(id),
+      resend: true,
+    };
+
+```
+
+### 2. List of Members Table Component
+
+> Note: Component is currently in progress.

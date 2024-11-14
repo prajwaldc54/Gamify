@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/prop-types": "off",
+    "react/no-children-prop": "off",
+    "no-console": "warn"
+  },
+  "parser": "@typescript-eslint/parser",
+  "extends": ["plugin:react/recommended"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "plugins": ["import", "@typescript-eslint", "react-hooks"]
+}

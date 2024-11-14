@@ -1,0 +1,41 @@
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="Documents/Post/PostVote" />
+
+# Post Vote
+
+## Introduction
+
+Post vote is an voting component that displays total votes after deducting all the down votes from the up votes.
+
+## Props
+
+The props passed to the component is listed below.
+
+```
+type PostVoteProps = {
+  postId: string;
+  voteNumber: number;
+  isVotedType: VoteTypeSchema;
+};
+```
+
+In above PostVoteProps type, `voteNumber` is total number of vote after deducting all the down votes from the up votes. And `isVotedType` is type of vote user has already participated. It includes `UP_VOTE`, `DOWN_VOTE` and `NOT_VOTED`. If user has not participated in any vote, the default value is passed to the component i.e, `NOT_VOTED`.
+
+## Functions
+
+#### 1. handleVoteChange()
+
+This function allows user to either up vote or down vote by passing the props of either `UP_VOTE` or `DOWN_VOTE`. `addVoteToPost` API function is called within this function that takes post id and vote type through which vote is updated.
+
+#### 2. removeVote()
+
+This function allows user to remove their existing vote (`UP_VOTE` or `DOWN_VOTE`). This function is called when user clicks the existing vote button.
+
+#### 3. handleUpVote()
+
+This function determine wheather to update the vote to `UP_VOTE` or remove the existing `UP_VOTE`. If the user has already voted this function calls `removeVote()` function, else the `handleVoteChange('UP_VOTE')` function is called with the props `UP_VOTE`.
+
+#### 4. handleDownVote()
+
+This function determine wheather to update the vote to `DOWN_VOTE` or remove the existing `DOWN_VOTE`. If the user has already voted this function calls `removeVote()` function, else the `handleVoteChange('DOWN_VOTE')` function is called with the props `DOWN_VOTE`.

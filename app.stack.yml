@@ -1,0 +1,24 @@
+version: '3'
+services:
+  genesis-gamify-frontend:
+    container_name: genesis-gamify-frontend
+    image: $APP_IMAGE_NAME
+    working_dir: /usr/share/nginx/html
+    # environment:
+    #   - REACT_APP_APP_TIMEOUT=1000
+    #   - REACT_APP_API_BASE_URL=https://api.gamify.dev.diagonal.solutions
+    ports:
+      - '9598:80'
+    networks:
+      - traefik
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.gamifyweb.rule=Host(`app.gamify.dev.diagonal.solutions`)'
+      - 'traefik.http.routers.gamifyweb.entrypoints=https'
+      - 'traefik.http.routers.gamifyweb.tls.certresolver=cert'
+      - 'traefik.docker.network=traefik'
+      - 'traefik.http.services.gamifyweb.loadbalancer.server.port=80'
+
+networks:
+  traefik:
+    external: true

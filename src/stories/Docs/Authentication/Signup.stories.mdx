@@ -1,0 +1,61 @@
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="Documents/Auth/Signup" />
+
+# Sign Up
+
+## Introduction
+
+Sign Up is a new user registration page. By filling up a basic form a user can create a account.
+
+## Form Validation
+
+Form validation is done using `Formik package`. Formik is used for validating name, email, password, confirm password and terms and condition checkbox.
+All of the mentioned fields are all compulsory to be field. Validation for each field are mentioned below:
+
+1. **Email address**
+   - Should be valid email address.
+   - Should be unique among all the user. User cannot register with exisiting email address.
+2. **Full Name**
+   - Should be atleast 3 character long.
+3. **Password**
+   - The length of password should be atleast eight character long.
+   - Password should contain atleast one capital letter, special character, numeric value and small letter.
+4. **Confirm Password**
+   - Confirm Password should be same as **Password**.
+5. **Terms and Condition Checkbox**
+   - Should be checked.
+
+The package automatically validates for each field and if the all fields validation are true it calls `register` API function defined in `src/api/auth.ts`.
+
+## Register User
+
+After the user validation, `register` API function is called, through which user is registerd to the system.
+The register API function takes an object in which user name, email address and password is defined. The passed object can also be seen below code.
+
+```
+{
+    "name":"Mister Who",
+    "email":"misterwho@gmail.com",
+    "password":"P@ssword123"
+}
+```
+
+If the passed user email already exists, it throws status error of '409' ('Duplicate Resource Response'). Else user is registered to the system and sent user information with new user id as a response.
+
+```
+{
+    "success": true,
+    "message": "Registration Successful.",
+    "data": {
+        "name": "Mister Who",
+        "email": "misterwho@gmail.com",
+        "id": "45"
+    }
+}
+```
+
+## Navigated To
+
+After the success, user is then navigated to the verification page. The path to navigate verify page is `/verify-user/{user-id}?email={user-email}`
+Here, the `user-email` and `user-id` is used from response to navigate to verification page.

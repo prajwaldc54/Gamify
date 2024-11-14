@@ -1,0 +1,10 @@
+export { ReactComponent as PlusButton } from './plus.svg';
+export { ReactComponent as Tick } from './checkbox-marked.svg';
+export { ReactComponent as SendButton } from './paper-plane-solid.svg';
+export { default as AllTeam } from './account-group.svg';
+export { default as Team } from './account-multiple.svg';
+export { default as Draft } from './lock.svg';
+export { default as Earth } from './earth.svg';
+export { ReactComponent as Search } from './search.svg';
+export { default as imageUpload } from './image.svg';
+export { default as MenuDown } from './caret-down-solid.svg';

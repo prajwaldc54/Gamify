@@ -1,0 +1,52 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.w-md-editor-toolbar {
+  padding: 0 !important;
+}
+
+.w-md-editor-text {
+  padding: 12px 0 !important;
+}
+
+[data-name='edit'],
+[data-name='preview'] {
+  font-family: Poppins, sans-serif;
+  color: #707070 !important;
+  font-size: 14px;
+  font-weight: medium;
+  padding: 4px;
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.w-md-editor-toolbar li.active {
+  border-bottom: 2px solid blue;
+  background-color: #fff !important;
+  padding: 2px;
+  font-weight: bold;
+}
+
+.w-md-editor-toolbar li.active > button {
+  background-color: #fff !important;
+}
+
+.w-md-editor-toolbar li > button {
+  color: #707070 !important;
+}
+
+.w-md-editor-toolbar ul:nth-child(2) li > button:disabled {
+  display: none;
+}
+
+
+/* react-date-picker styling */
+.react-date-picker__wrapper {
+  border: none;
+  border-radius: 6px;
+}

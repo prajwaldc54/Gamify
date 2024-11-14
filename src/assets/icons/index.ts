@@ -1,0 +1,16 @@
+export { default as bell } from './bell-icon.svg';
+export { default as chevronDown } from './chevron-down.svg';
+export { default as chevronRight } from './chevron-right.svg';
+export { default as dashboard } from './view-dashboard.svg';
+export { default as userCog } from './account-cog.svg';
+export { default as logout } from './logout.svg';
+export { default as close } from './close.svg';
+export { default as filterPlus } from './filter-variant-plus.svg';
+export { default as notePlus } from './note-plus.svg';
+export { default as star } from './star.svg';
+export { default as checkCircle } from './check-circle.svg';
+export { default as filterMenu } from './filter-menu.svg';
+export { default as bookmarkOutline } from './bookmark-outline.svg';
+export { default as logo } from '../images/logo.svg';
+export { default as comment } from './comments-solid.svg';
+export { default as answered } from './Component 138 – 1.svg';
